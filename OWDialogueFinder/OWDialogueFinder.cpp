@@ -12,7 +12,7 @@ string path = PROJECTDIR;
 string nomaiName;
 string hearthianName;
 bool includeSigns = false;
-bool sign;
+bool sign = false;
 
 int main() {
     path += "Dialogue";
@@ -36,18 +36,19 @@ int main() {
                 string fileName = file.path().stem().string();
                 if (fileName.find(hearthianName) != string::npos)
                 {
-                    if (!includeSigns) {
-                        while (getline(input, line))
+                    while (getline(input, line))
+                    {
+                        if (line.find(">SIGN") != string::npos && !includeSigns)
                         {
-                            if (line.find(">SIGN") != string::npos)
-                            {
-                                sign = true;
-                                break;
-                            }
+                            sign = true;
+                        }
+                        if (line.find(hearthianName) != string::npos)
+                        {
+                            if (!sign) cout << fileName << endl;
+                            else sign = false;
+                            break;
                         }
                     }
-                    if (!sign) cout << fileName << endl;
-                    else sign = false;
                 }
                 else
                 {
