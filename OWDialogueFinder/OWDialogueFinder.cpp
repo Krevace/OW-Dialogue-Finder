@@ -39,7 +39,7 @@ int main() {
                     if (!includeSigns) {
                         while (getline(input, line))
                         {
-                            if (line.find("SIGN") != string::npos)
+                            if (line.find(">SIGN") != string::npos)
                             {
                                 sign = true;
                                 break;
