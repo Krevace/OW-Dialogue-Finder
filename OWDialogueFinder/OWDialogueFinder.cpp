@@ -11,8 +11,9 @@ string line;
 string path = PROJECTDIR;
 string nomaiName;
 string hearthianName;
-bool includeSigns = false;
+bool includeSigns = true;
 bool sign = false;
+bool foundNomai = false;
 
 int main() {
     path += "Dialogue";
@@ -34,15 +35,31 @@ int main() {
             if (input.is_open())
             {
                 string fileName = file.path().stem().string();
-                if (fileName.find(hearthianName) != string::npos)
+                while (getline(input, line))
+                {
+                    if (line.find(nomaiName) != string::npos)
+                    {
+                        cout << fileName << endl;
+                        foundNomai = true;
+                        break;
+                    }
+                }
+                input.clear();
+                input.seekg(0, ios::beg);
+                if (fileName.find(hearthianName) != string::npos && !foundNomai)
                 {
                     while (getline(input, line))
                     {
-                        if (line.find(">SIGN") != string::npos && !includeSigns)
+                        if (line.find(">SIGN") != string::npos)
                         {
                             sign = true;
+                            if (includeSigns) {
+                                cout << fileName << " (SIGN)" << endl;
+                                sign = false; 
+                                break;
+                            }
                         }
-                        if (line.find(hearthianName) != string::npos)
+                        if (line.find(hearthianName) != string::npos || line.find(">RECORDING") != string::npos)
                         {
                             if (!sign) cout << fileName << endl;
                             else sign = false;
@@ -50,17 +67,7 @@ int main() {
                         }
                     }
                 }
-                else
-                {
-                    while (getline(input, line))
-                    {
-                        if (line.find(nomaiName) != string::npos)
-                        {
-                            cout << fileName << endl;
-                            break;
-                        }
-                    }
-                }
+                foundNomai = false;
                 input.close();
             }
         }
